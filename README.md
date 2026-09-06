@@ -1,1 +1,14 @@
-{"nbformat":4,"nbformat_minor":0,"metadata":{"colab":{"provenance":[],"authorship_tag":"ABX9TyOe/PLYIwXdZ2T8f58vt+DC"},"kernelspec":{"name":"python3","display_name":"Python 3"},"language_info":{"name":"python"}},"cells":[{"cell_type":"code","execution_count":null,"metadata":{"id":"uAtfHLejXf6V"},"outputs":[],"source":["The model maps tokenized IMDB reviews to trainable embeddings, processes the sequence using a SimpleRNN layer, and uses a sigmoid output for binary sentiment classification."]}]}
+The model maps tokenized IMDB reviews to trainable embeddings, processes the sequence using a SimpleRNN layer, and uses a sigmoid output for binary sentiment classification.
+
+Project overview
+Problem statement
+Dataset
+Architecture
+How RNN works
+Preprocessing
+Model performance
+Tech stack
+How to run
+Live demo
+Limitations
+Future improvements
