@@ -1,1 +1,108 @@
-{"nbformat":4,"nbformat_minor":0,"metadata":{"colab":{"provenance":[],"authorship_tag":"ABX9TyOPxSCW49HZRG0QDVeP079s"},"kernelspec":{"name":"python3","display_name":"Python 3"},"language_info":{"name":"python"}},"cells":[{"cell_type":"code","execution_count":null,"metadata":{"id":"kSY8Zl1yW6Bj"},"outputs":[],"source":["import streamlit as st\n","import tensorflow as tf\n","from tensorflow.keras.datasets import imdb\n","from tensorflow.keras.preprocessing.sequence import pad_sequences\n","\n","# ---------------------------------------------------\n","# Page configuration\n","# ---------------------------------------------------\n","\n","st.set_page_config(\n","    page_title=\"RNN Sentiment Analyzer\",\n","    page_icon=\"🎬\"\n",")\n","\n","# ---------------------------------------------------\n","# Load trained model\n","# ---------------------------------------------------\n","\n","@st.cache_resource\n","def load_sentiment_model():\n","    return tf.keras.models.load_model(\"simple_rnn_imdb.keras\")\n","\n","\n","model = load_sentiment_model()\n","\n","# ---------------------------------------------------\n","# IMDB vocabulary\n","# ---------------------------------------------------\n","\n","word_index = imdb.get_word_index()\n","\n","MAX_LENGTH = 500\n","\n","\n","# ---------------------------------------------------\n","# Preprocessing\n","# ---------------------------------------------------\n","\n","def preprocess_review(review):\n","\n","    words = review.lower().split()\n","\n","    encoded_review = []\n","\n","    for word in words:\n","        if word in word_index:\n","            encoded_review.append(word_index[word] + 3)\n","        else:\n","            encoded_review.append(2)\n","\n","    padded_review = pad_sequences(\n","        [encoded_review],\n","        maxlen=MAX_LENGTH\n","    )\n","\n","    return padded_review\n","\n","\n","# ---------------------------------------------------\n","# UI\n","# ---------------------------------------------------\n","\n","st.title(\"🎬 Movie Review Sentiment Analyzer\")\n","\n","st.write(\n","    \"\"\"\n","    This application uses a Simple Recurrent Neural Network (RNN)\n","    trained on the IMDB movie review dataset to classify a review\n","    as positive or negative.\n","    \"\"\"\n",")\n","\n","review = st.text_area(\n","    \"Enter a movie review:\",\n","    placeholder=\"Example: This movie was absolutely fantastic...\"\n",")\n","\n","\n","if st.button(\"Analyze Sentiment\"):\n","\n","    if review.strip():\n","\n","        processed_review = preprocess_review(review)\n","\n","        prediction = model.predict(\n","            processed_review,\n","            verbose=0\n","        )[0][0]\n","\n","        if prediction >= 0.5:\n","\n","            st.success(\"Positive Review 😊\")\n","\n","            st.write(\n","                f\"Positive sentiment score: **{prediction:.2%}**\"\n","            )\n","\n","        else:\n","\n","            st.error(\"Negative Review 😞\")\n","\n","            st.write(\n","                f\"Positive sentiment score: **{prediction:.2%}**\"\n","            )\n","\n","    else:\n","\n","        st.warning(\"Please enter a movie review.\")"]}]}
+import streamlit as st
+import tensorflow as tf
+from tensorflow.keras.datasets import imdb
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+# ---------------------------------------------------
+# Page configuration
+# ---------------------------------------------------
+
+st.set_page_config(
+    page_title="RNN Sentiment Analyzer",
+    page_icon="🎬"
+)
+
+# ---------------------------------------------------
+# Load trained model
+# ---------------------------------------------------
+
+@st.cache_resource
+def load_sentiment_model():
+    return tf.keras.models.load_model("simple_rnn_imdb.keras")
+
+
+model = load_sentiment_model()
+
+# ---------------------------------------------------
+# IMDB vocabulary
+# ---------------------------------------------------
+
+word_index = imdb.get_word_index()
+
+MAX_LENGTH = 500
+
+
+# ---------------------------------------------------
+# Preprocessing
+# ---------------------------------------------------
+
+def preprocess_review(review):
+
+    words = review.lower().split()
+
+    encoded_review = []
+
+    for word in words:
+        if word in word_index:
+            encoded_review.append(word_index[word] + 3)
+        else:
+            encoded_review.append(2)
+
+    padded_review = pad_sequences(
+        [encoded_review],
+        maxlen=MAX_LENGTH
+    )
+
+    return padded_review
+
+
+# ---------------------------------------------------
+# UI
+# ---------------------------------------------------
+
+st.title("🎬 Movie Review Sentiment Analyzer")
+
+st.write(
+    """
+    This application uses a Simple Recurrent Neural Network (RNN)
+    trained on the IMDB movie review dataset to classify a review
+    as positive or negative.
+    """
+)
+
+review = st.text_area(
+    "Enter a movie review:",
+    placeholder="Example: This movie was absolutely fantastic..."
+)
+
+
+if st.button("Analyze Sentiment"):
+
+    if review.strip():
+
+        processed_review = preprocess_review(review)
+
+        prediction = model.predict(
+            processed_review,
+            verbose=0
+        )[0][0]
+
+        if prediction >= 0.5:
+
+            st.success("Positive Review 😊")
+
+            st.write(
+                f"Positive sentiment score: **{prediction:.2%}**"
+            )
+
+        else:
+
+            st.error("Negative Review 😞")
+
+            st.write(
+                f"Positive sentiment score: **{prediction:.2%}**"
+            )
+
+    else:
+
+        st.warning("Please enter a movie review.")
